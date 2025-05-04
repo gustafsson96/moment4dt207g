@@ -22,7 +22,23 @@ router.post("/register", async (req, res) => {
 
 // User login
 router.post("/login", async (req, res) => {
-    console.log("Login called...")
+    try {
+        const { username, password } = req.body;
+
+        // Validate input (VIDAREUTVECKLA INNAN INLÄMNING, både validering och 400 meddelande)
+        if (!username || !password ) {
+            return res.status(400).json({ error: "Invalid input. Insert username and password."});
+        }
+
+        // Check credentials 
+        if(username === "julia" && password === "password") {
+            res.status(200).json({ message: "Login successful"});
+        } else {
+            res.status(401).json({ error: "Invalid username/password"});
+        }
+    } catch (error) {
+        res.status(500).json({ error: "Server error" });
+    }
 });
 
 module.exports = router;
