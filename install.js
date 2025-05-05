@@ -5,18 +5,41 @@ const sqlite3 = require("sqlite3").verbose();
 // Connect
 const db = new sqlite3.Database(process.env.DATABASE);
 
-// Create table users
+// Create tables
 db.serialize(() => {
-    // Drop table if exists
+    // Drop users table if it exists
     db.run("DROP TABLE IF EXISTS users");
 
-    // Create table
-    db.run(`CREATE TABLE users(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username VARCHAR(255) NOT NULL UNIQUE,
-            password VARCHAR (255) NOT NULL,
-            created DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
+    // Create users table
+    db.run(`CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        created DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
 
-    console.log("Table created...");
+    // Drop funfacts table if it exists
+    db.run("DROP TABLE IF EXISTS funfacts");
+
+    // Create funfacts table
+    db.run(`CREATE TABLE funfacts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        fact TEXT NOT NULL,
+        created DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    // Insert default facts
+    const facts = [
+        "Bananas are berries, but strawberries aren't.",
+        "Octopuses have three hearts.",
+        "Honey never spoils.",
+        "You can't hum while holding your nose.",
+        "Cats have fewer toes on their back paws."
+    ];
+
+    const stmt = db.prepare("INSERT INTO funfacts (fact) VALUES (?)");
+    facts.forEach(fact => stmt.run(fact));
+    stmt.finalize();
+
+    console.log("Tables created and data inserted...");
 });
