@@ -10,7 +10,6 @@ The API is a simple authentication system that uses JSON Web Tokens (JWT) and al
 * **Protected route:** A route that returns fun facts for authenticated users.
 * **SQLite Database:** Stores user credentials and fun facts.
 
-
 ## API Endpoints
 
 | Method     | End Point      | Description         |
