@@ -48,11 +48,27 @@ router.post("/login", async (req, res) => {
         }
 
         // Check credentials 
-        if (username === "julia" && password === "password") {
-            res.status(200).json({ message: "Login successful" });
-        } else {
-            res.status(401).json({ error: "Invalid username/password" });
-        }
+
+        // Check if user exists
+        const sql = `SELECT * FROM users WHERE username=?`
+        db.get(sql, [username], async (err, row) => {
+            if (err) {
+                res.status(400).json({ message: "Error authenticating" });
+            } else if (!row) {
+                res.status(401).json({ message: "Incorrect username or password" });
+            } else {
+                // User exists - check username and password
+                const passwordMatch = await bcrypt.compare(password, row.password);
+
+                if (!passwordMatch) {
+                    res.status(401).json({ message: "Incorrect username or password" });
+                } else {
+                    // Correct login
+                    res.status(200).json({ message: "Correct login" });
+                }
+            }
+        })
+
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
