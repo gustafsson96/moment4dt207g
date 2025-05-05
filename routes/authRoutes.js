@@ -14,25 +14,38 @@ router.post("/register", async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Validate input (VIDAREUTVECKLA INNAN INLÄMNING, både validering och 400 meddelande)
-        if (!username || !password) {
-            return res.status(400).json({ error: "Invalid input. Insert username and password." });
+        // Validate user input by ensuring username is a string and at least 3 characters
+        if (typeof username !== "string" || username.trim().length < 3) {
+            return res.status(400).json({ error: "Username must be at least 3 characters long." });
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        // Validate user input by ensuring password is a string and at least 6 characters
+        if (typeof password !== "string" || password.length < 6) {
+            return res.status(400).json({ error: "Password must be at least 6 characters long." });
+        }
 
-        // Check if user exists - på egen hand
-
-        // Save user if input is correct
-        const sql = `INSERT INTO users(username, password) VALUES(?,?)`;
-        db.run(sql, [username, hashedPassword], (err) => {
+        // Check if user already exists
+        const checkUser = `SELECT * FROM users WHERE username = ?`;
+        db.get(checkUser, [username], async (err, row) => {
             if (err) {
-                res.status(400).json({ message: "Error creating user..." })
-            } else {
-                res.status(201).json({ message: "User created successfully." });
+                return res.status(500).json({ message: "Database error." });
             }
-        });
+
+            if (row) {
+                return res.status(409).json({ message: "User already exists. Pick a different username." })
+            }
+
+            // If user does not exist, proceed to create
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            const insertUser = `INSERT INTO users(username, password) VALUES(?,?)`;
+            db.run(insertUser, [username.trim(), hashedPassword], (err) => {
+                if (err) {
+                    return res.status(400).json({ message: "Error creating user..." })
+                } else {
+                    res.status(201).json({ message: "User created successfully." });
+                }
+            });
+        })
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
@@ -43,13 +56,16 @@ router.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Validate input (VIDAREUTVECKLA INNAN INLÄMNING, både validering och 400 meddelande)
-        if (!username || !password) {
-            return res.status(400).json({ error: "Invalid input. Insert username and password." });
+        // Validate user input by ensuring username is a string and at least 3 characters
+        if (typeof username !== "string" || username.trim().length < 3) {
+            return res.status(400).json({ error: "Username must be at least 3 characters long." });
         }
 
-        // Check credentials 
-
+        // Validate user input by ensuring password is a string and at least 6 characters
+        if (typeof password !== "string" || password.length < 6) {
+            return res.status(400).json({ error: "Password must be at least 6 characters long." });
+        }
+        
         // Check if user exists
         const sql = `SELECT * FROM users WHERE username=?`
         db.get(sql, [username], async (err, row) => {
