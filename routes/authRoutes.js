@@ -65,7 +65,7 @@ router.post("/login", async (req, res) => {
         if (typeof password !== "string" || password.length < 6) {
             return res.status(400).json({ error: "Password must be at least 6 characters long." });
         }
-        
+
         // Check if user exists
         const sql = `SELECT * FROM users WHERE username=?`
         db.get(sql, [username], async (err, row) => {
@@ -83,15 +83,13 @@ router.post("/login", async (req, res) => {
                     // Create JWT
                     const payload = { username: username };
                     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
-                    const response = {
+                    res.status(200).json({
                         message: "User logged in!",
                         token: token
-                    }
-                    res.status(200).json({ response });
+                    });
                 }
             }
-        })
-
+        });
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
