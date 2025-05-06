@@ -13,6 +13,10 @@ app.use(bodyParser.json());
 
 // Routes
 
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to the API :-)" });
+});
+
 app.use("/api", authRoutes);
 
 // Protected route that returns fun facts
