@@ -4,7 +4,7 @@ const authRoutes = require("./routes/authRoutes");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const sqlite3 = require("sqlite3").verbose();
+const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database(process.env.DATABASE)
 
 const app = express();
