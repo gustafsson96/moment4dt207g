@@ -42,10 +42,16 @@ router.post("/register", async (req, res) => {
                 if (err) {
                     return res.status(400).json({ message: "Error creating user..." })
                 } else {
-                    res.status(201).json({ message: "User created successfully." });
+                    // Create JWT
+                    const payload = { username: username };
+                    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+                    res.status(200).json({
+                        message: "User logged in!",
+                        token: token
+                    });
                 }
             });
-        })
+        });
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
