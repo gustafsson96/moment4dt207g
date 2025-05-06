@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 // Routes
 
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to the API :-)" });
+    res.send("Welcome to this API :-)");
 });
 
 app.use("/api", authRoutes);
