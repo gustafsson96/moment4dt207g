@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const jwt = require("jsonwebtoken");
@@ -8,6 +9,7 @@ const sqlite3 = require("sqlite3");
 const db = new sqlite3.Database(process.env.DATABASE)
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
