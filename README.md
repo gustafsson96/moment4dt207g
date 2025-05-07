@@ -2,7 +2,7 @@
 
 This project is part of Moment 4 -  *"Autentisering och säkerhet"* in the course Backend-baserad webbutveckling (DT207G) at Mittuniversitetet, Sundsvall. 
 
-The API is a simple authentication system that uses JSON Web Tokens (JWT) and allows users to register, login and access protected data routes. 
+The API is a simple authentication system that uses JSON Web Tokens (JWT) and allows users to register, login and access a protected data route. The protected data route collects data with fun facts from the database.
 
 ## Features
 * **User registration:** Allows users to create an account.
@@ -14,7 +14,7 @@ The API is a simple authentication system that uses JSON Web Tokens (JWT) and al
 
 | Method     | End Point      | Description         |
 |------------|----------------|---------------------|
-| POST       | /api/register  | Registers a new user|
+| POST       | /api/register  | Registers a new user and returns a JWT.|
 | POST       | /api/login     | Logs in an existing user and returns a JWT.|
 | GET        | /api/protected | Fetches fun facts from the database. Requires a valid JWT.|
 
